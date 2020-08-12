@@ -1,7 +1,7 @@
 <template>
   <div id="app-wrapper">
     <header id="app-header">
-      <app-header v-on:loadBudget="loadBudget($event)"></app-header>
+      <app-header v-on:loadBudget="loadBudget($event)" v-on:saveBudget="saveBudget($event)"></app-header>
     </header>
     <main id="app-content">
       <div class="table">
@@ -71,125 +71,81 @@
         document.querySelector('#app-footer').style.width = `${contentWidth}px`
       },
       loadBudget: function(){
-        var data = {
-          general:[
-            {
-              desc: 'Mortage',
-              amount: 420
-            },
-            {
-              desc: 'Council Tax',
-              amount: 102
-            },
-            {
-              desc: 'Energy',
-              amount: 40
-            },
-            {
-              desc: 'Home Insurance',
-              amount: 18
-            },
-            {
-              desc: 'Life Insurance',
-              amount: 25
-            },
-            {
-              desc: 'Emergencies',
-              amount: 30
-            },
-            {
-              desc: 'Car Insurances',
-              amount: 76
-            },
-            {
-              desc: 'broadband',
-              amount: 46
-            },
-            {
-              desc: 'food',
-              amount: 160
-            },
-          ],
-          person: [
-            {
-              id: 0,
-              name: 'Aaron',
-              salary: 25000,
-              type: 'annually',
-              outcomes: [
-                {
-                  desc: 'Phone',
-                  amount: 25
-                },
-                {
-                  desc: 'Gym',
-                  amount: 30
-                },
-                {
-                  desc: 'Spotify',
-                  amount: 10
-                },
-                {
-                  desc: 'Petrol',
-                  amount: 80
-                },
-              ]
-            },
-            {
-              id: 1,
-              name: 'Jane',
-              salary: 20000,
-              type: 'annually',
-              outcomes: [
-                {
-                  desc: 'Phone',
-                  amount: 35
-                },
-                {
-                  desc: 'Gym',
-                  amount: 35
-                },
-                {
-                  desc: 'Spotify',
-                  amount: 10
-                },
-                {
-                  desc: 'Petrol',
-                  amount: 90
-                },
-                {
-                  desc: 'Flex Account',
-                  amount: 10
-                },
-              ]
-            }
-          ]
-        }
 
-        bus.$emit('generalData', data['general'])
-        bus.$emit('personData', data['person'])
+        let loadInput = document.createElement('input');
+        loadInput.setAttribute('type', 'file');
+        loadInput.setAttribute('id', 'budget-loader');
+        document.querySelector('#app-wrapper').appendChild(loadInput);
+        loadInput.style.visable = 'hidden';
+        loadInput.click();
+
+        loadInput.addEventListener('change', () => {
+
+
+          if(loadInput.files[0].type === "application/json"){
+
+            const reader = new FileReader();
+
+            reader.onload = (
+              function(){
+                return function(e){
+                  var data = JSON.parse(window.atob(e.target.result.split(',')[1]));
+                  this.budgetData = data;
+                  console.log(data)
+                  bus.$emit('generalData', data['general'])
+                  bus.$emit('personData', data['person'])
+                }
+              }
+            )()
+
+            reader.readAsDataURL(loadInput.files[0])
+          }
+
+
+        });
+
+
 
 
         console.log(this.personData)
 
       },
+      saveBudget(){
+        function download(filename, text){
+          var elm = document.createElement('a');
+          elm.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(text));
+          elm.setAttribute('download', filename);
+          elm.style.display = 'none';
+          document.querySelector('#app').appendChild(elm);
+          elm.click();
+          document.querySelector('#app').removeChild(elm);
+        }
+
+        download(`budget.json`, JSON.stringify(this.budgetData));
+      }
     },
     created(){
       bus.$on('addGeneralData', (data) => {
-        // this.budgetData['general'].
-        this.budgetData['general'].push(data[0]);
-        console.log(this.budgetData)
+        this.budgetData['general'] = data;
       });
       bus.$on('addPersonData', (data) => {
 
-        if(this.budgetData.person.length > 0){
-          this.budgetData.person.forEach((person, i) => {
-            if(person.id === data.id){
-              this.budgetData.person[i] = data[0];
+        if(this.budgetData['person'].length > 0){
+
+          for(let i=0;i<this.budgetData['person'].length;i++){
+
+            console.log(this.budgetData['person'][i])
+            if(this.budgetData['person'][i].id === data.id){
+              this.budgetData['person'][i] = data;
+              break;
+            }else{
+              this.budgetData['person'].push(data);
             }
-          })
+
+          }
+
         }else{
-          this.budgetData['person'].push(data[0]);
+          this.budgetData['person'].push(data);
         }
 
       });
@@ -217,6 +173,9 @@
        width: 430px;
      }
    }
+ }
+ #budget-loader{
+   display: none;
  }
  #app-footer{
    margin: 0 auto;
