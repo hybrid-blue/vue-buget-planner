@@ -87,12 +87,31 @@
 
         if(data) this.calculateTotal();
 
-        inputName.addEventListener('input', () => {
+        inputName.addEventListener('input', (e) => {
+          let field = e.target.parentNode;
+          let pos = field.id.split('-').pop();
+          let inputs = field.querySelectorAll('input');
+
+          this.generalData[pos] = {
+            desc: e.target.value,
+            value: parseInt(inputs[1].value),
+          }
+          // console.log(this.generalData)
           this.onInputKey();
         })
 
-        inputAmount.addEventListener('input', () => {
+        inputAmount.addEventListener('input', (e) => {
+          let field = e.target.parentNode;
+          let pos = field.id.split('-').pop();
+          let inputs = field.querySelectorAll('input');
+
+          this.generalData[pos] = {
+            desc: inputs[0].value,
+            amount: parseInt(e.target.value)
+          }
+          // console.log(this.generalData)
           this.onInputKey();
+
         })
 
         buttonRemove.addEventListener('click', (e) => {
@@ -109,7 +128,7 @@
             if(field.tagName !== 'BUTTON' && field.tagName !== 'FIELDSET'){
               if(field.type === 'number'){
                 if(field.value.length > 0){
-                  console.log(field.value)
+                  // console.log(field.value)
                   totalAmount.push(parseInt(field.value))
                 }
               }
