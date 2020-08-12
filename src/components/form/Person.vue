@@ -89,7 +89,7 @@
     },
     methods:{
       nameKey: function(){
-        console.log('Name Update')
+        // console.log('Name Update')
       },
       salaryKey: function(){
         this.perMonth = this.calculateSalary;
@@ -107,9 +107,11 @@
         let form = document.querySelector(`#${this.personId}`)
         var total = 0;
 
+        this.outcomeData = [];
+
         form.querySelectorAll('.outcome-amount').forEach(e => {
 
-          console.log(e)
+          // console.log(e)
 
           let id = e.parentNode.id.split('-').pop();
 
@@ -125,6 +127,9 @@
             desc: e.previousSibling.value || "",
             amount: parseInt(e.value) || 0
           }
+
+          // console.log(JSON.stringify(this.outcomeData))
+          // console.log(JSON.stringify(outcomeObj))
 
           if(JSON.stringify(this.outcomeData).indexOf(JSON.stringify(outcomeObj)) < 0){
             this.outcomeData.push(outcomeObj)
@@ -143,6 +148,8 @@
         this.totalOutcome = total;
         this.grossOutcome = this.perMonth - total;
 
+        // console.log(this.outcomeData)
+
 
         let personObj = {
           id: this.personId.split('-').pop(),
@@ -158,7 +165,7 @@
     },
     computed:{
       calculateSalary: function(){
-        var amount;
+        var amount = 0;
         switch(this.select){
           case 'annually':
             amount = (parseInt(this.salary) * 0.8) / 12;
@@ -174,36 +181,40 @@
             break;
         }
 
-        console.log('=== AMOUNT ===')
-        console.log(amount)
+        // console.log('=== AMOUNT ===')
+        // console.log(amount)
 
         return amount.toFixed(2);
       },
       generalOutcome: function(){
         // let forms = document.querySelectorAll('.person-form');
 
-        console.log('===== Person Forms =====')
-        console.log(this.formCount)
+        // console.log('===== Person Forms =====')
+        // console.log(this.formCount)
 
         return (this.general / this.formCount) || 0
       },
       remainingOutcome: function(){
-        console.log(this.grossOutcome);
-        console.log(this.generalOutcome);
+        // console.log(this.grossOutcome);
+        // console.log(this.generalOutcome);
         return (this.grossOutcome - this.generalOutcome).toFixed(2);
       }
     },
     created: function(){
 
+      // console.log(this.personData)
+
       this.name = this.personData.name;
       this.salary = this.personData.salary;
-      this.select = this.personData.type;
+      this.select = this.personData.select;
 
       this.perMonth = this.calculateSalary;
 
       this.outcomeData = [];
 
-      this.personData.outcomes.forEach((data) => {
+      // console.log(this.personData)
+
+      this.personData.outcome.forEach((data) => {
         this.outcomeData.push(data)
         this.addOutcome(data)
       })
