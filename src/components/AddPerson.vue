@@ -63,9 +63,8 @@
 <style lang="scss">
  #add-budget{
    box-sizing: border-box;
-   min-height: 45px;
    width: auto;
-   margin: 10px;
+   margin: 20px 10px 0 10px;
    display: flex;
    flex-direction: row;
    fieldset{
@@ -190,13 +189,16 @@
    }
  }
 
- .button-wrapper{
-   margin: 10px;
-   display: flex;
-   &__horizontal{
-     flex-direction: row;
+ .right-column{
+   .button-wrapper{
+     margin: 0 10px 10px 10px;
+     display: flex;
+     &__horizontal{
+       flex-direction: row;
+     }
    }
  }
+
 
  .outcome-fields{
    display: flex;
