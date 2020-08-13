@@ -1,6 +1,6 @@
 # Vue Budget Planner
 
-A simple Budget Planner built using Vue.JS.
+A simple Budget Planner built using VueJS.
 
 
 ## Features
