@@ -2,7 +2,7 @@
   <div v-bind:id="this.id">
     <input v-model="outcome.desc" placeholder="Description" />
     <input v-model="outcome.amount" v-on:keyup="amountKey" class="outcome-amount" type="number" placeholder="Amount" />
-    <button v-on:click.prevent="removePress">X</button>
+    <button class="form-button form-button-remove" v-on:click.prevent="removePress"><i class="fas fa-times"></i></button>
   </div>
 </template>
 
@@ -28,8 +28,9 @@
       amountKey: function(){
         this.emitOutcome();
       },
-      removePress: function(){
-        console.log(this)
+      removePress: function(e){
+        let id = e.target.parentNode.id.split('-').pop();
+        this.$emit('outcomeRemove', id)
       },
       emitOutcome: function(){
         this.$emit('outcomeKey')
