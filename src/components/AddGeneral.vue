@@ -1,11 +1,11 @@
 <template>
   <div id="edit-budget">
     <div id="general-budget">
+      <span class="column-title">General Outcome</span>
       <form id="general-form" class="form">
         <fieldset>
-          <legend>Add General Outcome</legend>
           <div class="form-field__block form-field__no-margin">
-            <button class="form-button__full-width" v-on:click.prevent="addInput">Add Outcome</button>
+            <button class="form-button form-button__full-width" v-on:click.prevent="addInput">Add Outcome</button>
             <div id="general-outcome-fields"></div>
           </div>
           <div id="person-budget">
@@ -58,9 +58,12 @@
         inputName.setAttribute('placeholder', 'Outcome Decription');
         inputAmount.setAttribute('placeholder', 'Outcome Amount');
 
-        buttonRemove.setAttribute('class', 'remove-field')
-        buttonRemove.setAttribute('name', `remove-${this.customField}`)
-        buttonRemove.innerHTML = "X";
+        buttonRemove.setAttribute('class', 'form-button form-button-remove remove-field')
+        buttonRemove.setAttribute('name', `remove-${this.customField}`);
+        let icon = document.createElement('i');
+        icon.setAttribute('class', 'fas fa-times')
+
+        buttonRemove.appendChild(icon);
 
         inputName.value = data.desc;
         inputAmount.value = data.amount;
@@ -116,6 +119,9 @@
 
         buttonRemove.addEventListener('click', (e) => {
           e.preventDefault();
+
+          this.generalData = [];
+
           let outcomeElm = document.querySelector('#general-outcome-fields')
           let targetElm = e.target.parentNode;
           outcomeElm.removeChild(targetElm);
@@ -128,7 +134,20 @@
             if(field.tagName !== 'BUTTON' && field.tagName !== 'FIELDSET'){
               if(field.type === 'number'){
                 if(field.value.length > 0){
-                  // console.log(field.value)
+
+                  let parent = field.parentNode;
+
+
+                  let generalObj = {
+                    desc: parent.querySelector('[type="text"]').value,
+                    amount: parent.querySelector('[type="number"]').value
+                  }
+
+                  if(JSON.stringify(this.generalData).indexOf(JSON.stringify(generalObj)) < 0){
+                    this.generalData.push(generalObj)
+                  }
+
+
                   totalAmount.push(parseInt(field.value))
                 }
               }
@@ -140,7 +159,10 @@
           }else{
             this.totalGeneral = 0;
           }
+
           this.$emit('generalUpdate', this.totalGeneral);
+          bus.$emit('addGeneralData', this.generalData);
+
         })
 
         bus.$emit('addGeneralData', this.generalData)
@@ -189,7 +211,7 @@
    margin: 10px;
    fieldset{
      display: block;
-     border: 2px solid #222;
+     border: 0;
    }
    label{
      font-weight: 600;
@@ -197,6 +219,9 @@
    }
    legend{
      font-weight: 600;
+   }
+   #general-budget{
+
    }
  }
 
@@ -244,6 +269,24 @@
     &__half-width{
       width: 50%;
       margin: 10px 0;
+    }
+    background: #42b883;
+    border: 1px solid #42b883;
+    border-radius: 2px;
+    color: #fff;
+    padding: 10px 0;
+    font-weight: 600;
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+    outline: none;
+    &:active{
+      transform: translate(2px, 2px);
+      box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
+      border: 1px solid transparent;
+      outline: none;
+    }
+    &-remove{
+      margin: 0 0 0 10px;
+      padding: 2px 10px !important;
     }
   }
  }
