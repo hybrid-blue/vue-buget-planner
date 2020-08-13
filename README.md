@@ -1,6 +1,6 @@
-# vue-budget-planner
+# Vue Budget Planner
 
-A Budget Planner using the Vue.JS Framework.
+A simple Budget Planner built using Vue.JS.
 
 
 ## Features
