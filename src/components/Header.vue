@@ -1,6 +1,6 @@
 <template>
   <div class="header header-horizontal">
-    <button v-on:click="loadData">Load Data</button> - <button v-on:click="saveData">Save Data</button>
+    <button class="form-button form-button__xs-width" v-on:click="loadData">Load Data</button> <button class="form-button form-button__xs-width" v-on:click="saveData">Save Data</button>
   </div>
 </template>
 
