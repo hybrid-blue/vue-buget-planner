@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div id="person-budget">
+    <span class="column-title">Person</span>
     <form class="form form-person">
       <fieldset>
-        <legend>Add Person</legend>
         <div class="form-field__block">
           <label class="form-input__inline-block">Name:</label>
           <input v-model="name" v-on:keyup="nameKey" class="form-input__inline-block__xs-width" type="text" name="full-name" placeholder="Name" required />
@@ -11,7 +11,7 @@
         <div class="form-field__block">
           <label class="form-input__inline-block">Salary:</label>
           <input v-model="salary" v-on:keyup="salaryKey" type="number" class="form-input__inline-block__xs-width" name="salary" required />
-          <select  v-model="select" v-on:change="selectChange" name="pay">
+          <select class="select-rate" v-model="select" v-on:change="selectChange" name="pay">
             <option value="annually">Per Year</option>
             <option value="monthly">Per Month</option>
             <option value="4-weeks">Every 4 weeks</option>
@@ -28,7 +28,7 @@
           <button id="add-fields" class="form-button form-button__half-width" v-on:click.prevent="addOutcome">Add Personal Outcome</button>
           <div class="outcome-fields form-field__block">
             <template v-for="(elm, index) in outcomeElms">
-              <component v-bind:is="elm" v-bind:key="elm.name" v-bind:id="`outcome-${index}`" v-on:outcomeKey="updateOutcome" v-bind:outcomeData="outcomeData[index]"></component>
+              <component v-bind:is="elm" v-bind:key="elm.name" v-bind:id="`outcome-${index}`" v-on:outcomeKey="updateOutcome" v-bind:outcomeData="outcomeData[index]" v-on:outcomeRemove="outcomeRemove($event)"></component>
             </template>
           </div>
         </div>
@@ -102,16 +102,30 @@
       addOutcome: function(){
         this.outcomeElms.push(outcomeFields)
       },
+      outcomeRemove: function(id){
+        let form = document.querySelector(`#${this.personId}`)
+
+        form.querySelectorAll('.outcome-amount').forEach(e => {
+          if(id === e.parentNode.id.split('-').pop()){
+            let parent = e.parentNode.parentNode;
+            parent.removeChild(e.parentNode)
+          }
+        });
+
+        this.updateOutcome()
+
+      },
       updateOutcome: function(){
 
         let form = document.querySelector(`#${this.personId}`)
         var total = 0;
 
         this.outcomeData = [];
+        this.outcomeValues = {};
 
         form.querySelectorAll('.outcome-amount').forEach(e => {
 
-          // console.log(e)
+          console.log(e)
 
           let id = e.parentNode.id.split('-').pop();
 
@@ -128,9 +142,6 @@
             amount: parseInt(e.value) || 0
           }
 
-          // console.log(JSON.stringify(this.outcomeData))
-          // console.log(JSON.stringify(outcomeObj))
-
           if(JSON.stringify(this.outcomeData).indexOf(JSON.stringify(outcomeObj)) < 0){
             this.outcomeData.push(outcomeObj)
           }
@@ -145,11 +156,10 @@
 
         })
 
+        console.log(total)
+
         this.totalOutcome = total;
         this.grossOutcome = this.perMonth - total;
-
-        // console.log(this.outcomeData)
-
 
         let personObj = {
           id: this.personId.split('-').pop(),
