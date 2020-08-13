@@ -182,7 +182,8 @@
   header{
     display: block;
     margin: 0 auto;
-    border-bottom: 1px solid #222;
+    padding: 0 0 10px;
+    border-bottom: 2px solid #222;
     .header{
       margin: 0 10px;
     }
