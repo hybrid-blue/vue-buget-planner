@@ -1,7 +1,7 @@
 <template>
   <div id="edit-budget">
     <div id="general-budget">
-      <span class="column-title">General Outcome</span>
+      <span v-if="showTitle" class="column-title">General Outcome</span>
       <form id="general-form" class="form">
         <fieldset>
           <div class="form-field__block form-field__no-margin">
@@ -30,7 +30,8 @@
         customField: 0,
         errors: [],
         totalGeneral: 0,
-        generalData: []
+        generalData: [],
+        showTitle: false
       }
     },
     methods:{
@@ -88,6 +89,9 @@
         formFieldElm.appendChild(inputAmount);
         formFieldElm.appendChild(buttonRemove);
 
+
+        this.showTitle = true;
+
         if(data) this.calculateTotal();
 
         inputName.addEventListener('input', (e) => {
@@ -120,11 +124,21 @@
         buttonRemove.addEventListener('click', (e) => {
           e.preventDefault();
 
+
+          let findTargetElm = function(elm){
+            if(elm.tagName === 'BUTTON'){
+              outcomeElm.removeChild(elm.parentNode);
+            }else{
+              findTargetElm(elm.parentNode);
+            }
+          }
+
           this.generalData = [];
 
-          let outcomeElm = document.querySelector('#general-outcome-fields')
-          let targetElm = e.target.parentNode;
-          outcomeElm.removeChild(targetElm);
+          let outcomeElm = document.querySelector('#general-outcome-fields');
+
+          findTargetElm(e.target);
+          // console.log(targetElm)
 
           const fields = document.querySelector('#general-form').elements;
 
@@ -160,6 +174,11 @@
             this.totalGeneral = 0;
           }
 
+
+          console.log(fields.length)
+
+          if(fields.length <= 2) this.showTitle = false;
+
           this.$emit('generalUpdate', this.totalGeneral);
           bus.$emit('addGeneralData', this.generalData);
 
@@ -176,6 +195,7 @@
       calculateTotal: function(){
         const fields = document.querySelector('#general-form').elements;
         let totalAmount = [];
+
         for(let field of fields){
           if(field.tagName !== 'BUTTON' && field.tagName !== 'FIELDSET'){
             if(field.type === 'number'){
@@ -208,7 +228,7 @@
  #edit-budget{
    box-sizing: border-box;
    width: auto;
-   margin: 10px;
+   margin: 20px 10px 10px 10px;
    fieldset{
      display: block;
      border: 0;
@@ -221,8 +241,20 @@
      font-weight: 600;
    }
    #general-budget{
-
+     .column-title{
+       margin: 0 0 10px 0;
+     }
    }
+ }
+
+ #general-form{
+   fieldset{
+     padding: 0 12px 10px 12px;
+   }
+   button{
+     margin: 0 0 10px 0;
+   }
+
  }
 
  .form{
