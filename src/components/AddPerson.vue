@@ -63,6 +63,7 @@
 <style lang="scss">
  #add-budget{
    box-sizing: border-box;
+   min-height: 45px;
    width: auto;
    margin: 10px;
    display: flex;
