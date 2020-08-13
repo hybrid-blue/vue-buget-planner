@@ -13,16 +13,18 @@
         </div>
       </div>
     </main>
+    <!--
     <footer id="app-footer">
       <app-footer v-bind:gAmount="gAmount" v-bind:pAmount="pAmount"></app-footer>
     </footer>
+    -->
   </div>
 </template>
 
 <script>
   import general from './AddGeneral.vue';
   import person from './AddPerson.vue';
-  import footer from './Footer.vue';
+  // import footer from './Footer.vue';
   import header from './Header.vue';
 
   import { bus } from '../main.js';
@@ -31,7 +33,7 @@
     components:{
       'person': person,
       'general': general,
-      'app-footer': footer,
+      // 'app-footer': footer,
       'app-header': header,
     },
     data(){
@@ -68,7 +70,8 @@
       newPerson: function(val){
         document.querySelectorAll('.right-column')[0].style.width = `${val * 430}px`;
         let contentWidth = document.querySelector('#app-content').offsetWidth;
-        document.querySelector('#app-footer').style.width = `${contentWidth}px`
+        var header = document.querySelector('header');
+        header.style.width = `${contentWidth}px`;
       },
       loadBudget: function(){
 
@@ -122,31 +125,53 @@
         }
 
         download(`budget.json`, JSON.stringify(this.budgetData));
-      }
+      },
+      // setHeaderWidth(){
+      //
+      // }
+    },
+    mounted(){
+      this.newPerson();
     },
     created(){
       bus.$on('addGeneralData', (data) => {
+        console.log(data)
         this.budgetData['general'] = data;
       });
       bus.$on('addPersonData', (data) => {
+
+        console.log(data)
+        var found, pos;
 
         if(this.budgetData['person'].length > 0){
 
           for(let i=0;i<this.budgetData['person'].length;i++){
 
-            console.log(this.budgetData['person'][i])
+            // console.log(this.budgetData['person'][i].id)
+            // console.log(data.id)
+
             if(this.budgetData['person'][i].id === data.id){
-              this.budgetData['person'][i] = data;
+              found = true;
+              pos = i;
               break;
             }else{
-              this.budgetData['person'].push(data);
+              found = false;
             }
 
+          }
+
+          if(found){
+            this.budgetData['person'][pos] = data;
+          }else{
+            this.budgetData['person'].push(data);
           }
 
         }else{
           this.budgetData['person'].push(data);
         }
+
+        // console.log('+++++++++++++++')
+        // this.setHeaderWidth();
 
       });
     }
@@ -154,20 +179,59 @@
 </script>
 
 <style lang="scss">
+  header{
+    display: block;
+    margin: 0 auto;
+    border-bottom: 1px solid #222;
+    .header{
+      margin: 0 10px;
+    }
+    .form-button{
+      &__xs-width{
+        width: 130px;
+      }
+      margin-right: 15px;
+      background: #42b883;
+      border: 1px solid #42b883;
+      border-radius: 2px;
+      color: #fff;
+      padding: 10px 0;
+      font-weight: 600;
+      box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+      outline: none;
+      &:active{
+        transform: translate(2px, 2px);
+        box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
+        border: 1px solid transparent;
+        outline: none;
+      }
+      &-remove{
+        margin: 0 0 0 10px;
+        padding: 2px 10px !important;
+      }
+    }
+  }
   #app-wrapper{
     display: flex;
     flex-direction: column;
+    .column-title{
+      display: block;
+      width: 100%;
+      font-weight: 600;
+      padding: 10px;
+      background: #42b883;
+      box-sizing: border-box;
+      color: #fff;
+    }
   }
  #app-content{
    margin: 0 auto;
    width: auto;
-   border: 1px solid #222;
    .table{
      display: flex;
      flex-direction: row;
      .left-column{
        width: 300px;
-       border-right: 1px solid #222;
      }
      .right-column{
        width: 430px;
