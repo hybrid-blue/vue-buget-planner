@@ -6,7 +6,7 @@
       </template>
     </div>
     <div class="button-wrapper button-wrapper__horizontal">
-      <button v-on:click="addPerson">Add Person</button>
+      <button class="form-button form-button__large-width form-button__right-margin" v-on:click="addPerson">Add Person</button>
     </div>
   </div>
 </template>
@@ -69,7 +69,7 @@
    flex-direction: row;
    fieldset{
      display: block;
-     border: 2px solid #222;
+     border: 0;
    }
    label{
      font-weight: 600;
@@ -77,6 +77,12 @@
    }
    legend{
      font-weight: 600;
+   }
+   .person-form{
+     margin: 0 10px 0 0;
+     &:last-child{
+       margin: 0;
+     }
    }
  }
 
@@ -129,12 +135,58 @@
       width: 50%;
       margin: 10px 0;
     }
+    background: #42b883;
+    border: 1px solid #42b883;
+    border-radius: 2px;
+    color: #fff;
+    padding: 10px 0;
+    font-weight: 600;
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
   }
   .form-text{
     &__bold{
       font-weight: 600;
     }
   }
+  .select-rate{
+    margin: 0 0 0 10px;
+  }
+ }
+
+ .form-button{
+   &__full-width{
+     width: 100%;
+     margin: 10px 0;
+   }
+   &__half-width{
+     width: 50%;
+     margin: 10px 0;
+   }
+   &__large-width{
+     width: 190px;
+     margin: 10px 0;
+   }
+   &__right-margin{
+     margin: 0 0 0 15px;
+   }
+   background: #42b883;
+   border: 1px solid #42b883;
+   border-radius: 2px;
+   color: #fff;
+   padding: 10px 0;
+   font-weight: 600;
+   box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+   outline: none;
+   &:active{
+     transform: translate(2px, 2px);
+     box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
+     border: 1px solid transparent;
+     outline: none;
+   }
+   &-remove{
+     margin: 0 0 0 10px;
+     padding: 2px 10px !important;
+   }
  }
 
  .button-wrapper{
